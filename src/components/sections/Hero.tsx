@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MapPin, Mail, ArrowDown } from "lucide-react";
 import { personal } from "../../data/resume";
 import { useTypewriter } from "../../hooks/useTypewriter";
+import { Lanyard } from "../ui/Lanyard";
 
 const ROTATING_WORDS = ["Software", "Site Reliability", "Data"];
 
@@ -48,6 +49,7 @@ export function Hero() {
         }}
       />
 
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-8 lg:items-center">
       <motion.div variants={container} initial="hidden" animate="show">
         <motion.p variants={item} className="font-mono text-emerald-400 text-sm mb-4 tracking-wider">
           Hi, my name is
@@ -94,6 +96,8 @@ export function Hero() {
         </motion.div>
 
       </motion.div>
+      <Lanyard />
+      </div>
 
       <motion.div
         initial={{ opacity: 0 }}

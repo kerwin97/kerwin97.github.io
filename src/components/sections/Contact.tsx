@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Mail, GitBranch, Link, Copy, Check } from "lucide-react";
+import { Mail, GitBranch, Copy, Check } from "lucide-react";
+import { LinkedInIcon } from "../ui/LinkedInIcon";
 import { personal } from "../../data/resume";
 import { SectionTitle } from "../ui/SectionTitle";
 import { useInView } from "../../hooks/useInView";
@@ -128,7 +129,7 @@ export function Contact() {
             aria-label="LinkedIn"
             className="text-zinc-500 hover:text-emerald-400 transition-colors"
           >
-            <Link size={22} />
+            <LinkedInIcon size={21} />
           </a>
         </div>
       </motion.div>
