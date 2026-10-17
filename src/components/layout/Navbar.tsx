@@ -53,16 +53,6 @@ export function Navbar() {
               </a>
             </li>
           ))}
-          <li>
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm border border-emerald-500 text-emerald-400 px-4 py-1.5 rounded hover:bg-emerald-500/10 transition-colors"
-            >
-              Resume
-            </a>
-          </li>
         </ul>
 
         <button
@@ -99,17 +89,6 @@ export function Navbar() {
                 </a>
               </li>
             ))}
-            <li>
-              <a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-sm border border-emerald-500 text-emerald-400 px-4 py-1.5 rounded hover:bg-emerald-500/10 transition-colors"
-                onClick={() => setOpen(false)}
-              >
-                Resume
-              </a>
-            </li>
           </ul>
         </div>
       )}

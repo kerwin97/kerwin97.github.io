@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Mail, Download, ArrowDown } from "lucide-react";
+import { MapPin, Mail, ArrowDown } from "lucide-react";
 import { personal } from "../../data/resume";
 import { useTypewriter } from "../../hooks/useTypewriter";
 
@@ -90,15 +90,6 @@ export function Hero() {
           >
             View My Work
             <ArrowDown size={16} />
-          </a>
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-zinc-600 text-zinc-300 hover:border-zinc-400 hover:text-zinc-100 font-medium px-6 py-3 rounded transition-colors"
-          >
-            Download Resume
-            <Download size={16} />
           </a>
         </motion.div>
 

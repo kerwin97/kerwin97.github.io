@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Mail, GitBranch, Link, Download, Copy, Check } from "lucide-react";
+import { Mail, GitBranch, Link, Copy, Check } from "lucide-react";
 import { personal } from "../../data/resume";
 import { SectionTitle } from "../ui/SectionTitle";
 import { useInView } from "../../hooks/useInView";
@@ -90,15 +90,6 @@ export function Contact() {
           >
             <Mail size={16} />
             Say Hello
-          </a>
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-zinc-600 text-zinc-300 hover:border-zinc-400 hover:text-zinc-100 font-medium px-6 py-3 rounded transition-colors"
-          >
-            <Download size={16} />
-            Download Resume
           </a>
         </div>
 
