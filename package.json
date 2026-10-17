@@ -4,7 +4,7 @@
   "source": "src/index.html",
   "scripts": {
     "dev": "parcel --port ${PORT:-3000}",
-    "build": "parcel build --dist-dir dist"
+    "build": "rm -rf dist && parcel build --dist-dir dist --no-cache && cp -R public/. dist/"
   },
   "keywords": [],
   "author": "Kerwin Lim",
