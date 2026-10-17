@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Briefcase, ChevronDown, Play } from "lucide-react";
 import { experience } from "../../data/resume";
 import { SectionTitle } from "../ui/SectionTitle";
+import { PixelFarm } from "../ui/PixelFarm";
 import { useInView } from "../../hooks/useInView";
 
 import ksLogo from "url:../../assets/logos/ks.jpg";
@@ -10,6 +11,7 @@ import gsLogo from "url:../../assets/logos/gs.jpg";
 import gwsLogo from "url:../../assets/logos/gws.jpg";
 import gullieLogo from "url:../../assets/logos/gullie.png";
 
+const BonderDemo = lazy(() => import("../bonder/BonderDemo").then((m) => ({ default: m.BonderDemo })));
 const TradeSimulator = lazy(() =>
   import("../trading/TradeSimulator").then((m) => ({ default: m.TradeSimulator }))
 );
@@ -63,7 +65,7 @@ function ExperienceCard({ job, index }: { job: (typeof experience)[0]; index: nu
       <div className="absolute left-0 top-2 bottom-0 w-px bg-zinc-800" />
       <div className="absolute left-[-5px] top-2 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-4 ring-zinc-950" />
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 hover:border-zinc-700 transition-colors">
+      <div className={`relative bg-zinc-900 border border-zinc-800 rounded-lg p-6 hover:border-zinc-700 transition-colors ${job.farm ? "pb-16" : ""}`}>
         <div className="flex flex-wrap items-start justify-between gap-2 mb-4">
           <div>
             <h3 className="text-zinc-100 font-semibold text-lg">{job.role}</h3>
@@ -110,7 +112,7 @@ function ExperienceCard({ job, index }: { job: (typeof experience)[0]; index: nu
           </button>
         )}
 
-        {job.demo === "tradePipeline" && (
+        {job.demo && (
           <div className="mt-5 pt-4 border-t border-zinc-800 flex flex-wrap items-center gap-3">
             <button
               onClick={() => setDemoOpen(true)}
@@ -119,14 +121,17 @@ function ExperienceCard({ job, index }: { job: (typeof experience)[0]; index: nu
               <Play size={14} /> Try it out!
             </button>
             <p className="text-xs text-zinc-500">
-              Book FICC trades through a simulated RabbitMQ pipeline and watch risk and P&amp;L update live.
+              {job.demo === "tradePipeline"
+                ? "Book FICC trades through a simulated RabbitMQ pipeline and watch risk and P&L update live."
+                : "Run a simulated ball bonder: set up a job on the computer, then watch it bond under the microscope."}
             </p>
           </div>
         )}
+        {job.farm && <PixelFarm />}
       </div>
       {demoOpen && (
         <Suspense fallback={null}>
-          <TradeSimulator onClose={() => setDemoOpen(false)} />
+          {job.demo === "ballBonder" ? <BonderDemo onClose={() => setDemoOpen(false)} /> : <TradeSimulator onClose={() => setDemoOpen(false)} />}
         </Suspense>
       )}
     </motion.div>

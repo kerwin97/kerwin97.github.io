@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { Activity, Minus, Pause, Play, Plus, RotateCcw, TriangleAlert, Undo2, X, Zap } from "lucide-react";
+import { Activity, Minus, Pause, Play, Plus, RotateCcw, TriangleAlert, Undo2, Zap } from "lucide-react";
+import { DemoModal } from "../ui/DemoModal";
 import { MAX_WORKERS, TradingEngine, type PipelineMetrics } from "./engine";
 import { PipelineDiagram } from "./PipelineDiagram";
 import { TradeTicket } from "./TradeTicket";
@@ -68,7 +68,6 @@ export function TradeSimulator({ onClose }: { onClose: () => void }) {
   const engine = engineRef.current;
   const [, setFrame] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
   const rerender = () => setFrame((n) => n + 1);
 
   useEffect(() => {
@@ -84,17 +83,6 @@ export function TradeSimulator({ onClose }: { onClose: () => void }) {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  useEffect(() => {
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [onClose]);
 
   const dlqDepth = engine.broker.queues.get("trades.dlq")!.messages.length;
   const toggleRisk = () => {
@@ -102,39 +90,24 @@ export function TradeSimulator({ onClose }: { onClose: () => void }) {
     rerender();
   };
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm overflow-y-auto"
-      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+  return (
+    <DemoModal
+      titleId="trade-sim-title"
+      onClose={onClose}
+      title={
+        <>
+          <Activity size={18} className="text-emerald-400" /> FICC trade pipeline
+        </>
+      }
+      description={
+        <>
+          A simulated RabbitMQ setup. A market data worker streams rates, FX and credit ticks. You publish trades to a
+          topic exchange. A risk and P&amp;L worker books them, revalues the book on every tick and fans results out to
+          the blotter. Stop the risk worker to watch queues back up, or inject failures to see nacks, redeliveries and
+          dead-lettering.
+        </>
+      }
     >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="trade-sim-title"
-        className="relative max-w-6xl my-6 md:my-10 mx-3 md:mx-auto bg-zinc-950 border border-zinc-800 rounded-xl p-4 md:p-6 space-y-4"
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h3 id="trade-sim-title" className="text-lg font-bold text-zinc-100 flex items-center gap-2">
-              <Activity size={18} className="text-emerald-400" /> FICC trade pipeline
-            </h3>
-            <p className="text-sm text-zinc-400 mt-1 max-w-3xl leading-relaxed">
-              A simulated RabbitMQ setup. A market data worker streams rates, FX and credit ticks. You publish trades to a
-              topic exchange. A risk and P&amp;L worker books them, revalues the book on every tick and fans results out to
-              the blotter. Stop the risk worker to watch queues back up, or inject failures to see nacks, redeliveries and
-              dead-lettering.
-            </p>
-          </div>
-          <button
-            ref={closeRef}
-            onClick={onClose}
-            aria-label="Close trade pipeline"
-            className="shrink-0 w-9 h-9 rounded-full border border-zinc-700 flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:border-zinc-500 transition-colors"
-          >
-            <X size={16} />
-          </button>
-        </div>
-
         <div className="flex flex-wrap gap-2">
           <button
             className={`${control} ${engine.mdRunning ? controlOn : controlOff}`}
@@ -288,8 +261,6 @@ export function TradeSimulator({ onClose }: { onClose: () => void }) {
             ))}
           </ol>
         </div>
-      </div>
-    </div>,
-    document.body
+    </DemoModal>
   );
 }

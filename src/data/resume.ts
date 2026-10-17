@@ -3,7 +3,8 @@ export interface WorkExperience {
   role: string;
   period: string;
   bullets: string[];
-  demo?: "tradePipeline";
+  demo?: "tradePipeline" | "ballBonder";
+  farm?: boolean;
 }
 
 export interface SkillGroup {
@@ -53,6 +54,7 @@ export const experience: WorkExperience[] = [
     company: "Kulicke & Soffa",
     role: "Advanced Software (Systems) Engineer",
     period: "Jul 2022 – Apr 2025",
+    demo: "ballBonder",
     bullets: [
       "Built real-time C++ systems on VxWorks and Linux over hypervisor for semiconductor equipment, designing multi-threaded data pipelines and integrating telemetry streams with monitoring services.",
       "Owned end-to-end delivery of Vertical Wire Height Monitor, building Qt/C++ applications (MVC, 10+ UI screens, custom X11 rendering) integrated with real-time wire visualization, hardware control, SQLite database.",
@@ -66,6 +68,7 @@ export const experience: WorkExperience[] = [
     company: "GWS",
     role: "Machine Learning Engineer Intern",
     period: "May 2022 – Jul 2022",
+    farm: true,
     bullets: [
       "Led a 3-person engineering team to develop an end-to-end audio biodiversity monitoring system, utilizing Python and TensorFlow to automate the identification of 4 distinct poultry species in noisy environments.",
       "Implemented unsupervised clustering algorithms (K-Means, DBSCAN, GMM), utilizing the Elbow Method and BIC scores to optimize hyper parameters Architected a semi-supervised learning framework combining a Convolutional Neural Network (CNN) for feature extraction with Gaussian Mixture Models (GMM).",
