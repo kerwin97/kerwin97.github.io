@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/* Light mode flips the zinc scale onto a warm off-white palette, so components keep their dark-mode class names. */
+[data-theme="light"] {
+  color-scheme: light;
+  --color-zinc-950: oklch(97.6% 0.006 85);
+  --color-zinc-900: oklch(99.4% 0.003 85);
+  --color-zinc-800: oklch(92.5% 0.007 85);
+  --color-zinc-700: oklch(86% 0.009 85);
+  --color-zinc-600: oklch(74% 0.01 85);
+  --color-zinc-500: oklch(50% 0.012 85);
+  --color-zinc-400: oklch(42% 0.012 85);
+  --color-zinc-300: oklch(34% 0.012 85);
+  --color-zinc-200: oklch(27% 0.01 85);
+  --color-zinc-100: oklch(21% 0.008 85);
+  --color-zinc-50: oklch(16% 0.006 85);
+  --color-emerald-300: oklch(43.2% 0.095 166.9);
+  --color-emerald-400: oklch(50.8% 0.118 165.6);
+  --color-emerald-500: oklch(52% 0.13 164);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    font-family: "Inter", sans-serif;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  code, pre, .font-mono {
+    font-family: "JetBrains Mono", monospace;
+  }
+}
+
+.name-gradient {
+  background-image: linear-gradient(to right, #bfdbfe, #3b82f6);
+  background-clip: text;
+  color: transparent;
+}
+
+[data-theme="light"] .name-gradient {
+  background-image: linear-gradient(to right, #3b82f6, #1e40af);
+}
