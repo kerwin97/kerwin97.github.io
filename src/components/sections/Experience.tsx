@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Briefcase, ChevronDown } from "lucide-react";
+import { Briefcase, ChevronDown, Play } from "lucide-react";
 import { experience } from "../../data/resume";
 import { SectionTitle } from "../ui/SectionTitle";
 import { useInView } from "../../hooks/useInView";
@@ -8,6 +8,11 @@ import { useInView } from "../../hooks/useInView";
 import ksLogo from "url:../../assets/logos/ks.jpg";
 import gsLogo from "url:../../assets/logos/gs.jpg";
 import gwsLogo from "url:../../assets/logos/gws.jpg";
+import gullieLogo from "url:../../assets/logos/gullie.png";
+
+const TradeSimulator = lazy(() =>
+  import("../trading/TradeSimulator").then((m) => ({ default: m.TradeSimulator }))
+);
 
 interface LogoConfig {
   src: string;
@@ -18,6 +23,7 @@ const COMPANY_LOGOS: Record<string, LogoConfig> = {
   "Goldman Sachs":   { src: gsLogo,  bg: "bg-[#6e8faf]" },
   "Kulicke & Soffa": { src: ksLogo,  bg: "bg-zinc-900"  },
   "GWS":             { src: gwsLogo, bg: "bg-white"      },
+  "Gullie":          { src: gullieLogo, bg: "bg-white"   },
 };
 
 const PREVIEW_COUNT = 2;
@@ -42,6 +48,7 @@ function CompanyLogo({ company }: { company: string }) {
 function ExperienceCard({ job, index }: { job: (typeof experience)[0]; index: number }) {
   const { ref, inView } = useInView(0.1);
   const [expanded, setExpanded] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
   const hasMore = job.bullets.length > PREVIEW_COUNT;
   const visibleBullets = expanded ? job.bullets : job.bullets.slice(0, PREVIEW_COUNT);
 
@@ -102,7 +109,26 @@ function ExperienceCard({ job, index }: { job: (typeof experience)[0]; index: nu
             {expanded ? "Show less" : `Show ${job.bullets.length - PREVIEW_COUNT} more`}
           </button>
         )}
+
+        {job.demo === "tradePipeline" && (
+          <div className="mt-5 pt-4 border-t border-zinc-800 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setDemoOpen(true)}
+              className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold text-sm px-4 py-2 rounded transition-colors"
+            >
+              <Play size={14} /> Try it out!
+            </button>
+            <p className="text-xs text-zinc-500">
+              Book FICC trades through a simulated RabbitMQ pipeline and watch risk and P&amp;L update live.
+            </p>
+          </div>
+        )}
       </div>
+      {demoOpen && (
+        <Suspense fallback={null}>
+          <TradeSimulator onClose={() => setDemoOpen(false)} />
+        </Suspense>
+      )}
     </motion.div>
   );
 }

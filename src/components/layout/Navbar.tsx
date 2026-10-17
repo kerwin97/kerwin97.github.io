@@ -7,7 +7,6 @@ import { useTheme } from "../../hooks/useTheme";
 const NAV_LINKS = [
   { label: "Experience", href: "#experience" },
   { label: "Skills", href: "#skills" },
-  { label: "Playground", href: "#playground" },
   { label: "Projects", href: "#projects" },
   { label: "Education", href: "#education" },
   { label: "Contact", href: "#contact" },

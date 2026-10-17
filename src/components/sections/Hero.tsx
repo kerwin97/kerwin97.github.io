@@ -1,9 +1,8 @@
 import { useCallback } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Mail, Download, ArrowDown } from "lucide-react";
-import { personal, highlights } from "../../data/resume";
+import { personal } from "../../data/resume";
 import { useTypewriter } from "../../hooks/useTypewriter";
-import { CountUp } from "../ui/CountUp";
 
 const ROTATING_WORDS = ["Software", "Site Reliability", "Data"];
 
@@ -103,23 +102,13 @@ export function Hero() {
           </a>
         </motion.div>
 
-        <motion.div variants={item} className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3">
-          {highlights.map((h) => (
-            <div key={h.label} className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
-              <p className="text-2xl md:text-3xl font-bold text-zinc-100">
-                <CountUp to={h.value} suffix={h.suffix} />
-              </p>
-              <p className="text-xs text-zinc-500 mt-1 leading-snug">{h.label}</p>
-            </div>
-          ))}
-        </motion.div>
       </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.6 }}
-        className="mt-12 flex justify-start"
+        className="mt-24 flex justify-start"
       >
         <div className="flex flex-col items-center gap-2 text-zinc-600">
           <span className="text-xs tracking-widest rotate-90 mb-2">scroll</span>

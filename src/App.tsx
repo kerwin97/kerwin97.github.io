@@ -6,7 +6,6 @@ import { Hero } from "./components/sections/Hero";
 // Lazy-loaded below-the-fold sections — Parcel splits these into separate chunks
 const Experience = lazy(() => import("./components/sections/Experience").then(m => ({ default: m.Experience })));
 const Skills = lazy(() => import("./components/sections/Skills").then(m => ({ default: m.Skills })));
-const MessageFlow = lazy(() => import("./components/sections/MessageFlow").then(m => ({ default: m.MessageFlow })));
 const Projects = lazy(() => import("./components/sections/Projects").then(m => ({ default: m.Projects })));
 const Education = lazy(() => import("./components/sections/Education").then(m => ({ default: m.Education })));
 const Contact = lazy(() => import("./components/sections/Contact").then(m => ({ default: m.Contact })));
@@ -34,9 +33,6 @@ export default function App() {
         </Suspense>
         <Suspense fallback={<SectionSkeleton />}>
           <Skills />
-        </Suspense>
-        <Suspense fallback={<SectionSkeleton />}>
-          <MessageFlow />
         </Suspense>
         <Suspense fallback={<SectionSkeleton />}>
           <Projects />

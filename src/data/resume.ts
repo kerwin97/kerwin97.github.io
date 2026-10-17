@@ -3,6 +3,7 @@ export interface WorkExperience {
   role: string;
   period: string;
   bullets: string[];
+  demo?: "tradePipeline";
 }
 
 export interface SkillGroup {
@@ -34,18 +35,12 @@ export const personal = {
   phone: "+65-82220812",
 };
 
-export const highlights = [
-  { value: 10, suffix: "k+", label: "messages a day through Kafka & RabbitMQ pipelines" },
-  { value: 80, suffix: "%", label: "less debugging time from telemetry export" },
-  { value: 30, suffix: "%", label: "faster calibration with computer vision" },
-  { value: 4, suffix: "+", label: "years shipping production systems" },
-];
-
 export const experience: WorkExperience[] = [
   {
     company: "Goldman Sachs",
     role: "Associate Software Engineer",
     period: "Apr 2025 – Present",
+    demo: "tradePipeline",
     bullets: [
       "Optimized distributed systems utilizing Java and Akka for actor-based concurrency, enhancing data pipeline throughput and reducing processing latency while managing hardware limitations.",
       "Architected and managed high-volume data streaming pipelines leveraging Kafka and RabbitMQ, significantly improving system scalability and reliability for handling 10k+ transactions/messages daily.",
@@ -75,6 +70,16 @@ export const experience: WorkExperience[] = [
       "Led a 3-person engineering team to develop an end-to-end audio biodiversity monitoring system, utilizing Python and TensorFlow to automate the identification of 4 distinct poultry species in noisy environments.",
       "Implemented unsupervised clustering algorithms (K-Means, DBSCAN, GMM), utilizing the Elbow Method and BIC scores to optimize hyper parameters Architected a semi-supervised learning framework combining a Convolutional Neural Network (CNN) for feature extraction with Gaussian Mixture Models (GMM).",
       "Facilitated data-driven decision making by translating technical findings into actionable insights in stakeholder presentations, communicating model performance metrics (Confusion Matrices, Log Loss) to guide project strategy",
+    ],
+  },
+  {
+    company: "Gullie",
+    role: "Frontend Developer",
+    period: "Jun 2020 – Dec 2020",
+    bullets: [
+      "Built the company's cross-platform mobile app in Flutter and Dart, delivering iOS and Android from a single codebase.",
+      "Connected the app's screens to live data through Firebase and SQL-backed services.",
+      "Worked in a small, fast-moving startup team, taking features from design through development and testing and iterating quickly on user feedback.",
     ],
   },
 ];
