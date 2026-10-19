@@ -131,7 +131,7 @@ export const projects: Project[] = [
     tags: ["React Native", "Google Maps API"],
   },
   {
-    name: "LegalAlligator",
+    name: "Legal Alligator",
     context: "Legal Tech Hackathon",
     period: "May 2019",
     bullets: [

@@ -1,5 +1,5 @@
-import { useState, lazy, Suspense } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Briefcase, ChevronDown, Play } from "lucide-react";
 import { experience } from "../../data/resume";
 import { SectionTitle } from "../ui/SectionTitle";
@@ -29,6 +29,8 @@ const COMPANY_LOGOS: Record<string, LogoConfig> = {
 };
 
 const PREVIEW_COUNT = 2;
+const STICKY_TOP = 96; // clears the fixed navbar
+const STACK_OFFSET = 14; // each card pins a little lower so earlier cards peek out above it
 
 function CompanyLogo({ company }: { company: string }) {
   const config = COMPANY_LOGOS[company];
@@ -47,7 +49,15 @@ function CompanyLogo({ company }: { company: string }) {
   );
 }
 
-function ExperienceCard({ job, index }: { job: (typeof experience)[0]; index: number }) {
+function ExperienceCard({
+  job,
+  index,
+  cardRef,
+}: {
+  job: (typeof experience)[0];
+  index: number;
+  cardRef: (el: HTMLDivElement | null) => void;
+}) {
   const { ref, inView } = useInView(0.1);
   const [expanded, setExpanded] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
@@ -60,12 +70,13 @@ function ExperienceCard({ job, index }: { job: (typeof experience)[0]; index: nu
       initial={{ opacity: 0, x: -24 }}
       animate={inView ? { opacity: 1, x: 0 } : {}}
       transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-      className="relative pl-8 pb-12 last:pb-0"
+      className="sticky mb-[12vh] last:mb-0"
+      style={{ top: STICKY_TOP + index * STACK_OFFSET }}
     >
-      <div className="absolute left-0 top-2 bottom-0 w-px bg-zinc-800" />
-      <div className="absolute left-[-5px] top-2 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-4 ring-zinc-950" />
-
-      <div className={`relative bg-zinc-900 border border-zinc-800 rounded-lg p-6 hover:border-zinc-700 transition-colors ${job.farm ? "pb-16" : ""}`}>
+      <div
+        ref={cardRef}
+        className={`relative bg-zinc-900 border border-zinc-800 rounded-lg p-6 hover:border-zinc-700 transition-colors origin-top will-change-transform ${job.farm ? "pb-16" : ""}`}
+      >
         <div className="flex flex-wrap items-start justify-between gap-2 mb-4">
           <div>
             <h3 className="text-zinc-100 font-semibold text-lg">{job.role}</h3>
@@ -139,6 +150,44 @@ function ExperienceCard({ job, index }: { job: (typeof experience)[0]; index: nu
 }
 
 export function Experience() {
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    let raf = 0;
+    // As the next card rises toward its pin point, shrink and dim the one beneath it.
+    const update = () => {
+      raf = 0;
+      const cards = cardRefs.current;
+      cards.forEach((card, i) => {
+        if (!card) return;
+        const next = cards[i + 1];
+        if (!next) {
+          card.style.transform = "";
+          card.style.filter = "";
+          return;
+        }
+        const nextTop = next.getBoundingClientRect().top;
+        const pinAt = STICKY_TOP + (i + 1) * STACK_OFFSET;
+        const t = Math.min(1, Math.max(0, 1 - (nextTop - pinAt) / (window.innerHeight * 0.75)));
+        card.style.transform = `scale(${1 - t * 0.06})`;
+        card.style.filter = `brightness(${1 - t * 0.35})`;
+      });
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [reduceMotion]);
+
   return (
     <section id="experience" className="max-w-5xl mx-auto px-6 py-24">
       <SectionTitle>
@@ -147,7 +196,14 @@ export function Experience() {
       </SectionTitle>
       <div>
         {experience.map((job, i) => (
-          <ExperienceCard key={job.company} job={job} index={i} />
+          <ExperienceCard
+            key={job.company}
+            job={job}
+            index={i}
+            cardRef={(el) => {
+              cardRefs.current[i] = el;
+            }}
+          />
         ))}
       </div>
     </section>

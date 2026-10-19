@@ -103,11 +103,14 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.6 }}
-        className="mt-24 flex justify-start"
+        className="relative mt-10 lg:mt-24 flex items-start justify-between gap-4"
       >
-        <div className="flex flex-col items-center gap-2 text-zinc-600">
+        <div className="flex flex-col items-center gap-2 text-zinc-600 pt-4">
           <span className="text-xs tracking-widest rotate-90 mb-2">scroll</span>
           <div className="w-px h-16 bg-gradient-to-b from-zinc-600 to-transparent" />
+        </div>
+        <div className="absolute left-1/2 top-0 -translate-x-1/2">
+          <Lanyard variant="mobile" />
         </div>
       </motion.div>
     </section>
