@@ -53,8 +53,32 @@ export function Lanyard({ variant = "desktop" }: { variant?: "desktop" | "mobile
 
   const cx = boxW / 2;
   // The badge hangs along the strap, so it tilts by the strap's angle from vertical.
-  const rotate = useTransform(() => (-Math.atan2(x.get(), lift.get() + clipY + y.get()) * 180) / Math.PI);
+  // The strap can't hang above its anchor (e.g. mid drop-in), so keep the vertical span positive to avoid flipping the badge.
+  const rotate = useTransform(() => (-Math.atan2(x.get(), Math.max(40, lift.get() + clipY + y.get())) * 180) / Math.PI);
   const strap = useTransform(() => `M ${cx} ${-lift.get()} L ${cx + x.get()} ${clipY + y.get()}`);
+
+  // Scrolling kicks the badge sideways in proportion to scroll speed; it then swings back like a pendulum.
+  const dragging = useRef(false);
+  useEffect(() => {
+    if (reduceMotion) return;
+    let lastY = window.scrollY;
+    let lastT = performance.now();
+    const maxV = 280 * size.scale;
+    const onScroll = () => {
+      const now = performance.now();
+      const dy = window.scrollY - lastY;
+      const dt = Math.max(16, now - lastT);
+      lastY = window.scrollY;
+      lastT = now;
+      const box = boxRef.current?.getBoundingClientRect();
+      if (dragging.current || !box || box.bottom < 0 || box.top > window.innerHeight) return;
+      const kick = Math.max(-1, Math.min(1, dy / dt)) * 180 * size.scale;
+      const velocity = Math.max(-maxV, Math.min(maxV, x.getVelocity() + kick));
+      animate(x, 0, { type: "spring", stiffness: 35, damping: 6, velocity });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [reduceMotion, x, size.scale]);
 
   const role = experience[0];
 
@@ -95,6 +119,8 @@ export function Lanyard({ variant = "desktop" }: { variant?: "desktop" | "mobile
         dragElastic={0.2}
         dragConstraints={size.drag}
         dragTransition={{ bounceStiffness: 80, bounceDamping: 5 }}
+        onDragStart={() => (dragging.current = true)}
+        onDragEnd={() => (dragging.current = false)}
       >
         <div className="relative" style={{ width: CARD_W, transform: `scale(${size.scale})`, transformOrigin: "top left" }}>
         <div className="absolute left-1/2 -translate-x-1/2 -top-6 w-7 h-9 rounded-md bg-[#d4d4d8] border border-[#a1a1aa]">
