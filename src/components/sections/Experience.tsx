@@ -31,6 +31,29 @@ const COMPANY_LOGOS: Record<string, LogoConfig> = {
 const PREVIEW_COUNT = 2;
 const STICKY_TOP = 96; // clears the fixed navbar
 const STACK_OFFSET = 14; // each card pins a little lower so earlier cards peek out above it
+const BOTTOM_GAP = 24; // space kept between a pinned card and the bottom of the screen
+
+// Pin each card at its stack position, or higher if it's too tall to fit, so a tall
+// (e.g. expanded) card scrolls fully into view and rests just above the screen's bottom edge.
+function useStickyTop(index: number) {
+  const elRef = useRef<HTMLDivElement | null>(null);
+  const normalTop = STICKY_TOP + index * STACK_OFFSET;
+  const [top, setTop] = useState(normalTop);
+  useEffect(() => {
+    const el = elRef.current;
+    if (!el) return;
+    const measure = () => setTop(Math.min(normalTop, window.innerHeight - el.offsetHeight - BOTTOM_GAP));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [normalTop]);
+  return { elRef, top };
+}
 
 function CompanyLogo({ company }: { company: string }) {
   const config = COMPANY_LOGOS[company];
@@ -63,15 +86,19 @@ function ExperienceCard({
   const [demoOpen, setDemoOpen] = useState(false);
   const hasMore = job.bullets.length > PREVIEW_COUNT;
   const visibleBullets = expanded ? job.bullets : job.bullets.slice(0, PREVIEW_COUNT);
+  const { elRef, top } = useStickyTop(index);
 
   return (
     <motion.div
-      ref={ref as React.RefObject<HTMLDivElement>}
+      ref={(el: HTMLDivElement | null) => {
+        (ref as React.MutableRefObject<HTMLElement | null>).current = el;
+        elRef.current = el;
+      }}
       initial={{ opacity: 0, x: -24 }}
       animate={inView ? { opacity: 1, x: 0 } : {}}
       transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
       className="sticky mb-[12vh] last:mb-0"
-      style={{ top: STICKY_TOP + index * STACK_OFFSET }}
+      style={{ top }}
     >
       <div
         ref={cardRef}
@@ -169,7 +196,7 @@ export function Experience() {
           return;
         }
         const nextTop = next.getBoundingClientRect().top;
-        const pinAt = STICKY_TOP + (i + 1) * STACK_OFFSET;
+        const pinAt = next.parentElement ? parseFloat(getComputedStyle(next.parentElement).top) : 0;
         const t = Math.min(1, Math.max(0, 1 - (nextTop - pinAt) / (window.innerHeight * 0.75)));
         card.style.transform = `scale(${1 - t * 0.06})`;
         card.style.filter = `brightness(${1 - t * 0.35})`;
