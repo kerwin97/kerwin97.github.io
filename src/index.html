@@ -8,9 +8,14 @@
     <meta property="og:description" content="Portfolio of Kerwin Lim, Software Engineer at Goldman Sachs." />
     <meta property="og:type" content="website" />
     <title>Kerwin Lim — Software Engineer</title>
+    <!-- Browser chrome colour (e.g. the iOS status bar). Kept in sync with THEME_COLOR in useTheme.ts. -->
+    <meta name="theme-color" content="#f9f7f3" />
     <script>
       try {
-        if (localStorage.getItem("theme") === "dark") delete document.documentElement.dataset.theme;
+        if (localStorage.getItem("theme") === "dark") {
+          delete document.documentElement.dataset.theme;
+          document.querySelector('meta[name="theme-color"]').setAttribute("content", "#09090b");
+        }
       } catch (e) {}
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />

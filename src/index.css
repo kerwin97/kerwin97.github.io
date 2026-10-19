@@ -27,6 +27,8 @@
   html {
     scroll-behavior: smooth;
     color-scheme: dark;
+    /* Set on the root, not just body, so iOS Safari tints the status bar and overscroll area to match. */
+    background-color: var(--color-zinc-950);
   }
 
   body {
